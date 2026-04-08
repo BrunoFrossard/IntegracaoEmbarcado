@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import os
 
-# Importando as funções do seu arquivo database.py
-# Certifique-se que o arquivo database.py está na mesma pasta
 try:
     from database import init_db, inserir_leitura, buscar_leituras, buscar_uma_leitura, atualizar_leitura, deletar_leitura
 except ImportError:
@@ -10,16 +8,12 @@ except ImportError:
 
 app = Flask(__name__)
 
-# --- INICIALIZAÇÃO DO BANCO ---
-# Isso garante que a tabela 'leituras' seja criada assim que o Flask ligar
 with app.app_context():
     try:
         init_db()
         print("Sucesso: Banco de dados inicializado e pronto para uso.")
     except Exception as e:
         print(f"Erro ao iniciar banco: {e}")
-
-# --- ROTAS DE NAVEGAÇÃO (FRONT-END) ---
 
 @app.route('/')
 def index():
@@ -39,14 +33,11 @@ def pagina_editar(id_leitura):
         return render_template('editar.html', leitura=leitura)
     return "Leitura não encontrada", 404
 
-# --- ROTAS DA API (DADOS JSON) ---
-
 @app.route('/api/estatisticas')
 def api_dados():
     """Rota que o JavaScript do gráfico usa para buscar os dados do banco"""
     try:
         dados = buscar_leituras()
-        # Retorna as últimas 20 leituras para o gráfico
         return jsonify({"historico": dados[-20:]})
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
@@ -89,8 +80,6 @@ def api_excluir_leitura(id_leitura):
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
-# --- INICIALIZAÇÃO DO SERVIDOR ---
 
 if __name__ == '__main__':
-    # O host '0.0.0.0' permite que outros PCs na rede vejam o site (se quiser)
     app.run(debug=True, port=5000)
