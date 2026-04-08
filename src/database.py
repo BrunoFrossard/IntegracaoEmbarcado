@@ -43,7 +43,6 @@ def buscar_leituras():
     finally:
         conn.close()
 
-# ESTAS FUNÇÕES ESTAVAM FALTANDO:
 def buscar_uma_leitura(id_leitura):
     conn = conectar()
     conn.row_factory = sqlite3.Row
