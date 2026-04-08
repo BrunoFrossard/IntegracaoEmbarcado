@@ -58,12 +58,10 @@
     </div>
 
     <script>
-        // ESSA FUNÇÃO FICA FORA DO LOOP, ELA RECEBE O ID PELO ONCLICK
         async function excluirLeitura(id_recebido) {
             if (!confirm("Excluir registro permanentemente?")) return;
 
             try {
-                // Rota do seu app.py: /leituras/<int:id_leitura>
                 const res = await fetch(`/leituras/${id_recebido}`, { 
                     method: 'DELETE' 
                 });
