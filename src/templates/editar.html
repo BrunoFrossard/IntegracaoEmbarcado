@@ -42,7 +42,6 @@
                 pressao: document.getElementById('pres').value
             };
 
-            // Envia a requisição PUT para a rota /leituras/ID
             const res = await fetch(`/leituras/{{ leitura.id }}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -51,7 +50,7 @@
 
             if (res.ok) {
                 alert("Atualizado com sucesso!");
-                window.location.href = '/historico'; // Volta para a tabela
+                window.location.href = '/historico'; 
             } else {
                 alert("Erro ao atualizar dados.");
             }
