@@ -11,7 +11,6 @@ try:
         if linha and linha.startswith('{'):
             try:
                 payload = json.loads(linha)
-                # Envia para a API do Flask
                 requests.post(URL, json=payload)
                 print(f"Enviado com sucesso: {payload}")
             except Exception as e:
