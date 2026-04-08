@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico IoT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .tabela-container { max-height: 450px; overflow-y: auto; }
+        .sticky-top { position: sticky; top: 0; background: #212529; z-index: 10; }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="/">Estação IoT</a>
+            <div class="d-flex">
+                <a href="/" class="btn btn-outline-light me-2">Painel</a>
+                <a href="/historico" class="btn btn-light">Histórico</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-4">📋 Histórico de Dados</h5>
+                <div class="table-responsive tabela-container">
+                    <table class="table table-hover">
+                        <thead class="sticky-top text-white">
+                            <tr>
+                                <th>ID</th>
+                                <th>Data/Hora</th>
+                                <th>Temp.</th>
+                                <th>Umid.</th>
+                                <th>Pressão</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for l in leituras %}
+                            <tr id="linha-{{ l.id }}">
+                                <td>{{ l.id }}</td>
+                                <td>{{ l.timestamp }}</td>
+                                <td>{{ l.temperatura }}°C</td>
+                                <td>{{ l.umidade }}%</td>
+                                <td>{{ l.pressao if l.pressao else '--' }} hPa</td>
+                                <td class="text-center">
+                                    <a href="/editar/{{ l.id }}" class="btn btn-sm btn-warning">Editar</a>
+                                    <button onclick="excluirLeitura({{ l.id }})" class="btn btn-sm btn-danger">Excluir</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ESSA FUNÇÃO FICA FORA DO LOOP, ELA RECEBE O ID PELO ONCLICK
+        async function excluirLeitura(id_recebido) {
+            if (!confirm("Excluir registro permanentemente?")) return;
+
+            try {
+                // Rota do seu app.py: /leituras/<int:id_leitura>
+                const res = await fetch(`/leituras/${id_recebido}`, { 
+                    method: 'DELETE' 
+                });
+
+                if (res.ok) {
+                    const linha = document.getElementById(`linha-${id_recebido}`);
+                    if (linha) linha.remove();
+                } else {
+                    alert("Erro ao excluir no servidor.");
+                }
+            } catch (err) {
+                console.error("Erro:", err);
+            }
+        }
+    </script>
+</body>
+</html>
